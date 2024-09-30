@@ -98,7 +98,7 @@ function convertTextToSpeech($text) {
     return $outputFile;
 }
 
-// Handling file upload and processing
+// Handle file upload and processing
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Save the uploaded audio file
     $target_dir = "uploads/";
@@ -114,27 +114,88 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Convert ChatGPT response to speech using Google Cloud Text-to-Speech API
     $audioFile = convertTextToSpeech($chatGPTResponse);
 
-    // Output the transcription and ChatGPT response
-    echo "User: " . $transcribedText . "<br>";
-    echo "ChatGPT: " . $chatGPTResponse . "<br>";
-
-    // Provide the audio output for download or playback
-    echo "<audio controls>
-            <source src='$audioFile' type='audio/mpeg'>
-          </audio><br>";
-    echo "<a href='$audioFile' download>Download Audio Response</a>";
+    // Return JSON response
+    echo json_encode([
+        'transcription' => $transcribedText,
+        'chatGPTResponse' => $chatGPTResponse,
+        'audioFile' => $audioFile
+    ]);
+    exit;
 }
+
 ?>
 
-<!-- HTML Form to Upload Audio -->
+<!-- HTML with Bootstrap and jQuery -->
 <!DOCTYPE html>
-<html>
-<body>
-    <h2>Chat with ChatGPT using Voice</h2>
-    <form action="" method="post" enctype="multipart/form-data">
-        Select an audio file:
-        <input type="file" name="audio" id="audio">
-        <input type="submit" value="Talk" name="submit">
-    </form>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Voice Interaction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Chat with ChatGPT Using Voice</h2>
+        
+        <form id="voice-form" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="audio" class="form-label">Select an audio file:</label>
+                <input type="file" name="audio" id="audio" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload and Get Response</button>
+        </form>
+
+        <hr>
+
+        <div id="results" class="mt-5">
+            <h4>Transcription:</h4>
+            <p id="transcription" class="text-muted"></p>
+
+            <h4>ChatGPT Response:</h4>
+            <p id="chatgpt-response" class="text-muted"></p>
+
+            <h4>Audio Response:</h4>
+            <audio id="audio-response" controls class="mt-3" style="display: none;">
+                <source id="audio-source" src="" type="audio/mpeg">
+            </audio>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#voice-form').on('submit', function(e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        var data = JSON.parse(response);
+
+                        // Display the transcription and ChatGPT response
+                        $('#transcription').text(data.transcription);
+                        $('#chatgpt-response').text(data.chatGPTResponse);
+
+                        // Set the audio file and display the audio player
+                        $('#audio-source').attr('src', data.audioFile);
+                        $('#audio-response').show();
+                        $('#audio-response')[0].load();
+                    },
+                    error: function(err) {
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
