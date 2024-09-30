@@ -1,4 +1,4 @@
-# PHP and NodeJS Script Integration with ChatGPT and Google Cloud Speech & Text-to-Speech APIs
+# PHP and ReactNative Script Integration with ChatGPT and Google Cloud Speech & Text-to-Speech APIs
 
 # Requirements and Setup
 
