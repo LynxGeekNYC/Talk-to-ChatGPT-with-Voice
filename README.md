@@ -83,3 +83,13 @@ After downloading your service account key from the Google Cloud Console, set up
 - Make sure the audio file is of a supported format and matches the required **sample rate** and **encoding**.
 - Double-check your **OpenAI API Key** is valid and has sufficient quota.
 - Review file permissions on the `uploads/` folder to ensure the script can save files there.
+
+# Was this script helpful to you? Please donate:
+
+I put a lot of work into these scripts so please donate if you can. Even $1 helps!
+
+PayPal: alex@alexandermirvis.com
+
+CashApp / Venmo: LynxGeekNYC
+
+BitCoin: bc1q8sthd96c7chhq5kr3u80xrxs26jna9d8c0mjh7
